@@ -126,13 +126,11 @@
 
 <div class="card">
   <div class="header">
-    <!-- Brand icon: single-color stroke SVG, ~48px. Replace the <svg> below with your brand mark. -->
-    <svg class="brand-icon" width="48" height="48" viewBox="0 0 24 24" fill="none"
-         stroke="#141412" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+    <!-- Brand icon: BlazeAPI flame, single-color stroke, inline SVG. -->
+    <svg class="brand-icon" width="52" height="52" viewBox="0 0 24 24" fill="none"
+         stroke="#ff8a2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
          aria-hidden="true">
-      <path d="M12 2.5c1.8 2.6 1 4.4-.2 6-1 1.4-1.8 2.7-1.2 4.5.5-1 1.2-1.5 2.1-1.8-.3 2.6 1.6 3.2 1.6 5.3 0 1.9-1.5 3.4-3.5 3.4"/>
-      <path d="M12 21.5c-3.6-.4-6.5-3.3-6.5-7 0-2.9 1.7-4.7 3.1-6.6"/>
-      <path d="M12 21.5c3.4-.2 6.5-2.9 6.5-6.7 0-2.4-1.1-4-2.3-5.6"/>
+      <path d="M9.9 9.3 C 9.0 10.6 7.2 11.0 6.3 9.4 C 5.2 10.6 4.4 12.5 4.4 14.3 C 4.4 18.4 7.8 21.6 12 21.6 C 16.2 21.6 19.6 18.3 19.6 14.0 C 19.6 9.6 16.5 5.1 12.5 2.4 C 12.3 4.4 11.7 5.9 11.0 6.9 C 10.2 8.0 9.6 9.3 9.5 10.5 C 9.45 11.1 9.4 11.5 9.2 12.0"/>
     </svg>
     <div class="headline-1" id="headline-1"></div>
     <div class="headline-2" id="headline-2"></div>
@@ -159,6 +157,7 @@
 const DATA = {
   headline: {
     line1: "DeepSeek V4 Pro is now live",
+    highlight: "DeepSeek V4 Pro", // this part of line1 renders in the hero color
     line2: "on BlazeAPI",
   },
   specs: ["1M Context Length", "132k output"],
@@ -193,8 +192,20 @@ function multiline(el, text) {
   });
 }
 
-// header
-document.getElementById("headline-1").textContent = DATA.headline.line1;
+// header — the highlight substring of line1 renders in the hero model's color
+const h1 = document.getElementById("headline-1");
+const hl = DATA.headline.highlight;
+const at = hl ? DATA.headline.line1.indexOf(hl) : -1;
+if (at === -1) {
+  h1.textContent = DATA.headline.line1;
+} else {
+  h1.appendChild(document.createTextNode(DATA.headline.line1.slice(0, at)));
+  const mark = document.createElement("span");
+  mark.textContent = hl;
+  mark.style.color = DATA.models[0].color;
+  h1.appendChild(mark);
+  h1.appendChild(document.createTextNode(DATA.headline.line1.slice(at + hl.length)));
+}
 document.getElementById("headline-2").textContent = DATA.headline.line2;
 const spec = document.getElementById("specline");
 DATA.specs.forEach((s, i) => {
