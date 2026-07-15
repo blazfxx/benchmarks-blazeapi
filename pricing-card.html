@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1080">
+<title>BlazeAPI — Lite Plan Announcement Card</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { background: #2a2a28; }
+  body { display: grid; place-items: center; min-height: 100vh; }
+
+  /* ============ CARD (1080x1080 export frame) ============ */
+  .card {
+    position: relative;
+    width: 1080px;
+    height: 1080px;
+    overflow: hidden;
+    background: #f7f4ea;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
+  /* ============ HEADER (top ~40%) ============ */
+  .header {
+    padding-top: 46px;
+    text-align: center;
+    color: #141412;
+  }
+  .brand-icon { display: block; margin: 0 auto 22px; }
+  .headline-1 {
+    font-size: 80px;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+  }
+  .headline-2 {
+    font-size: 52px;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    margin-top: 4px;
+  }
+  .specline {
+    margin-top: 18px;
+    font-size: 30px;
+    font-weight: 400;
+    color: #8a8a86;
+  }
+  .specline .dot { margin: 0 14px; }
+
+  /* ============ PANEL (bottom ~60%, tilted back) ============ */
+  .panel {
+    position: absolute;
+    left: -8px;
+    right: -8px;
+    top: 408px;
+    height: 780px; /* extends past the card edge; bottom is cropped */
+    background: #0a0a0c;
+    border-radius: 28px;
+    transform: perspective(1400px) rotateX(6deg);
+    transform-origin: 50% 100%;
+    padding: 60px 64px 0;
+  }
+
+  .panel-label {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: #8a8a86;
+    text-transform: uppercase;
+  }
+
+  /* model tiles */
+  .tiles {
+    margin-top: 30px;
+    display: flex;
+    gap: 28px;
+  }
+  .tile {
+    flex: 1 1 0;
+    background: #15151a;   /* flat solid, one step above the panel */
+    border-radius: 20px;
+    padding: 40px 36px 36px;
+  }
+  .tile-swatch { width: 18px; height: 18px; border-radius: 5px; margin-bottom: 22px; }
+  .tile-name {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 34px;
+    font-weight: 700;
+    color: #f2f2ee;
+    line-height: 1.1;
+  }
+  .tile-sub {
+    margin-top: 12px;
+    font-size: 19px;
+    color: #8a8a86;
+    line-height: 1.35;
+  }
+
+  /* feature row */
+  .features {
+    margin-top: 66px;
+    display: flex;
+    justify-content: center;
+    gap: 52px;
+  }
+  .feature { display: flex; align-items: center; gap: 12px; }
+  .feature-square { width: 11px; height: 11px; border-radius: 3px; background: #ff8a2b; }
+  .feature-text { font-size: 23px; font-weight: 500; color: #d8d8d2; }
+
+  /* price pill */
+  .cta {
+    margin: 66px auto 0;
+    width: max-content;
+    background: #ff8a2b;   /* flat solid */
+    color: #0a0a0c;
+    border-radius: 999px;
+    padding: 24px 62px;
+    font-size: 29px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <!-- Brand icon: BlazeAPI flame, single-color stroke, inline SVG. -->
+    <svg class="brand-icon" width="52" height="52" viewBox="0 0 24 24" fill="none"
+         stroke="#ff8a2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+         aria-hidden="true">
+      <path d="M9.9 9.3 C 9.0 10.6 7.2 11.0 6.3 9.4 C 5.2 10.6 4.4 12.5 4.4 14.3 C 4.4 18.4 7.8 21.6 12 21.6 C 16.2 21.6 19.6 18.3 19.6 14.0 C 19.6 9.6 16.5 5.1 12.5 2.4 C 12.3 4.4 11.7 5.9 11.0 6.9 C 10.2 8.0 9.6 9.3 9.5 10.5 C 9.45 11.1 9.4 11.5 9.2 12.0"/>
+    </svg>
+    <div class="headline-1" id="headline-1"></div>
+    <div class="headline-2" id="headline-2"></div>
+    <div class="specline" id="specline"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label" id="panel-label"></div>
+    <div class="tiles" id="tiles"></div>
+    <div class="features" id="features"></div>
+    <div class="cta" id="cta"></div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   EDIT ONLY THIS BLOCK PER RELEASE.
+   - headline.highlight: the part of line1 rendered in the accent color.
+   - models: the plans' included models, one tile each.
+   ================================================================ */
+const DATA = {
+  accent: "#ff8a2b",
+  headline: {
+    line1: "Unlimited for $7/month",
+    highlight: "$7/month",
+    line2: "with the new Lite plan",
+  },
+  specs: ["Unlimited requests", "3 models", "Cancel anytime"],
+  panelLabel: "Included models",
+  models: [
+    { name: "DeepSeek Flash", sub: "Fast everyday reasoning", swatch: "#ff8a2b" },
+    { name: "GLM 5.1",        sub: "General chat and coding", swatch: "#f2f2ee" },
+    { name: "MiniMax M3",     sub: "Long-context workhorse",  swatch: "#8a8a86" },
+  ],
+  features: ["No daily caps", "Swap models anytime", "Flat monthly price"],
+  cta: "Start for $7/month",
+};
+/* ================================================================ */
+
+// header — highlight substring of line1 renders in the accent color
+const h1 = document.getElementById("headline-1");
+const hl = DATA.headline.highlight;
+const at = hl ? DATA.headline.line1.indexOf(hl) : -1;
+if (at === -1) {
+  h1.textContent = DATA.headline.line1;
+} else {
+  h1.appendChild(document.createTextNode(DATA.headline.line1.slice(0, at)));
+  const mark = document.createElement("span");
+  mark.textContent = hl;
+  mark.style.color = DATA.accent;
+  h1.appendChild(mark);
+  h1.appendChild(document.createTextNode(DATA.headline.line1.slice(at + hl.length)));
+}
+document.getElementById("headline-2").textContent = DATA.headline.line2;
+
+const spec = document.getElementById("specline");
+DATA.specs.forEach((s, i) => {
+  if (i > 0) {
+    const dot = document.createElement("span");
+    dot.className = "dot";
+    dot.textContent = "•";
+    spec.appendChild(dot);
+  }
+  spec.appendChild(document.createTextNode(s));
+});
+
+// panel
+document.getElementById("panel-label").textContent = DATA.panelLabel;
+
+const tiles = document.getElementById("tiles");
+DATA.models.forEach((m) => {
+  const tile = document.createElement("div");
+  tile.className = "tile";
+  const sw = document.createElement("div");
+  sw.className = "tile-swatch";
+  sw.style.background = m.swatch;
+  const name = document.createElement("div");
+  name.className = "tile-name";
+  name.textContent = m.name;
+  const sub = document.createElement("div");
+  sub.className = "tile-sub";
+  sub.textContent = m.sub;
+  tile.append(sw, name, sub);
+  tiles.appendChild(tile);
+});
+
+const features = document.getElementById("features");
+DATA.features.forEach((f) => {
+  const item = document.createElement("div");
+  item.className = "feature";
+  const sq = document.createElement("span");
+  sq.className = "feature-square";
+  const tx = document.createElement("span");
+  tx.className = "feature-text";
+  tx.textContent = f;
+  item.append(sq, tx);
+  features.appendChild(item);
+});
+
+document.getElementById("cta").textContent = DATA.cta;
+</script>
+
+</body>
+</html>
