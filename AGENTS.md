@@ -3,6 +3,11 @@
 This repo holds 1080×1080 social announcement card templates for BlazeAPI.
 Full documentation lives in `README.md` — read it before changing anything.
 
+**To generate a card from someone's own data**, follow the step-by-step
+recipe in `README.md` ("Generate a card from your OWN data"): pick the
+template, copy it to a new file, collect the real numbers/copy (never invent
+them), fill only `DATA`, render, and visually verify.
+
 The short version:
 
 1. To make a new card, edit **only** the `const DATA = {...}` block in
