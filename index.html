@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1080">
+<title>BlazeAPI — Benchmark Announcement Card</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { background: #2a2a28; }
+  body { display: grid; place-items: center; min-height: 100vh; }
+
+  /* ============ CARD (1080x1080 export frame) ============ */
+  .card {
+    position: relative;
+    width: 1080px;
+    height: 1080px;
+    overflow: hidden;
+    background: #f7f4ea;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
+  /* ============ HEADER (top ~40%) ============ */
+  .header {
+    padding-top: 46px;
+    text-align: center;
+    color: #141412;
+  }
+  .brand-icon { display: block; margin: 0 auto 22px; }
+  .headline-1 {
+    font-size: 80px;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+  }
+  .headline-2 {
+    font-size: 52px;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    margin-top: 4px;
+  }
+  .specline {
+    margin-top: 18px;
+    font-size: 30px;
+    font-weight: 400;
+    color: #8a8a86;
+  }
+  .specline .dot { margin: 0 14px; }
+
+  /* ============ PANEL (bottom ~60%, tilted back) ============ */
+  .panel {
+    position: absolute;
+    left: 26px;
+    right: 26px;
+    top: 428px;
+    height: 740px; /* extends past the card edge; bottom is cropped like the reference */
+    background: #0a0a0c;
+    border-radius: 28px;
+    transform: perspective(1400px) rotateX(4deg);
+    transform-origin: top center;
+    padding: 30px 30px 0;
+  }
+
+  /* legend */
+  .legend {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding-left: 8px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 9px; }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 3px; }
+  .legend-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #d8d8d2;
+    letter-spacing: 0.01em;
+  }
+
+  /* chart */
+  .chart {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 48px;
+  }
+  .group { display: flex; flex-direction: column; align-items: center; }
+  .bars { display: flex; align-items: flex-end; gap: 8px; }
+  .bar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .bar { width: 26px; border-radius: 999px; }
+  .val {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 7px;
+    white-space: nowrap;
+  }
+  .gname {
+    margin-top: 16px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.15;
+    color: #f2f2ee;
+    text-align: center;
+  }
+  .gsub {
+    margin-top: 3px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 12px;
+    color: #8a8a86;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <!-- Brand icon: single-color stroke SVG, ~48px. Replace the <svg> below with your brand mark. -->
+    <svg class="brand-icon" width="48" height="48" viewBox="0 0 24 24" fill="none"
+         stroke="#141412" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+         aria-hidden="true">
+      <path d="M12 2.5c1.8 2.6 1 4.4-.2 6-1 1.4-1.8 2.7-1.2 4.5.5-1 1.2-1.5 2.1-1.8-.3 2.6 1.6 3.2 1.6 5.3 0 1.9-1.5 3.4-3.5 3.4"/>
+      <path d="M12 21.5c-3.6-.4-6.5-3.3-6.5-7 0-2.9 1.7-4.7 3.1-6.6"/>
+      <path d="M12 21.5c3.4-.2 6.5-2.9 6.5-6.7 0-2.4-1.1-4-2.3-5.6"/>
+    </svg>
+    <div class="headline-1" id="headline-1"></div>
+    <div class="headline-2" id="headline-2"></div>
+    <div class="specline" id="specline"></div>
+  </div>
+
+  <div class="panel">
+    <div class="legend" id="legend"></div>
+    <div class="chart" id="chart"></div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   EDIT ONLY THIS BLOCK PER RELEASE.
+   - models: hero first; its bar and value label render in its own color,
+     all other value labels render off-white.
+   - benchmarks: scores array is positional, one score per model above.
+     Use "\n" in a name for a two-line label.
+   - Groups scale 0-100. If any score in a group exceeds 100 (e.g. a
+     Codeforces rating), that group is silently normalized to its own
+     max; the real values still show as labels.
+   ================================================================ */
+const DATA = {
+  headline: {
+    line1: "DeepSeek V4 Pro is now live",
+    line2: "on BlazeAPI",
+  },
+  specs: ["1M Context Length", "132k output"],
+  models: [
+    { name: "DeepSeek-V4-Pro-Max", color: "#ff8a2b" }, // hero
+    { name: "Claude-Opus-4.6-Max", color: "#f2f2ee" },
+    { name: "GPT-5.4-xHigh",       color: "#8a8a86" },
+    { name: "Gemini-3.1-Pro-High", color: "#55554f" },
+  ],
+  benchmarks: [
+    { name: "SimpleQA\nVerified",   sub: "",         scores: [57.9, 46.2, 45.3, 75.6] },
+    { name: "HLE",                  sub: "(Pass@1)", scores: [37.7, 40.0, 39.8, 44.4] },
+    { name: "Apex\nShortlist",      sub: "",         scores: [90.2, 85.9, 78.1, 89.1] },
+    { name: "Codeforces",           sub: "(Rating)", scores: [3206, 3166, 3052, 2988] },
+    { name: "SWE\nVerified",        sub: "",         scores: [80.6, 80.8, 80.6, 76.2] },
+    { name: "Terminal\nBench 2.0",  sub: "",         scores: [67.9, 65.4, 75.1, 68.5] },
+  ],
+};
+/* ================================================================ */
+
+const BAR_MAX = 400;             // px height of a full-scale (100) bar
+const NON_HERO_LABEL = "#e9e9e3"; // value-label color for non-hero models
+
+function fmt(v) {
+  return v > 100 ? String(Math.round(v)) : v.toFixed(1);
+}
+
+function multiline(el, text) {
+  text.split("\n").forEach((line, i) => {
+    if (i > 0) el.appendChild(document.createElement("br"));
+    el.appendChild(document.createTextNode(line));
+  });
+}
+
+// header
+document.getElementById("headline-1").textContent = DATA.headline.line1;
+document.getElementById("headline-2").textContent = DATA.headline.line2;
+const spec = document.getElementById("specline");
+DATA.specs.forEach((s, i) => {
+  if (i > 0) {
+    const dot = document.createElement("span");
+    dot.className = "dot";
+    dot.textContent = "•";
+    spec.appendChild(dot);
+  }
+  spec.appendChild(document.createTextNode(s));
+});
+
+// legend
+const legend = document.getElementById("legend");
+DATA.models.forEach((m) => {
+  const item = document.createElement("div");
+  item.className = "legend-item";
+  const sw = document.createElement("span");
+  sw.className = "legend-swatch";
+  sw.style.background = m.color;
+  const name = document.createElement("span");
+  name.className = "legend-name";
+  name.textContent = m.name;
+  item.append(sw, name);
+  legend.appendChild(item);
+});
+
+// chart
+const chart = document.getElementById("chart");
+DATA.benchmarks.forEach((b) => {
+  const group = document.createElement("div");
+  group.className = "group";
+
+  const bars = document.createElement("div");
+  bars.className = "bars";
+  bars.style.height = (BAR_MAX + 26) + "px"; // bar area + room for the floating value label
+
+  const max = Math.max(...b.scores);
+  const scale = max > 100 ? max / 0.94 : 100; // own scale for rating-style groups
+
+  b.scores.forEach((v, i) => {
+    const model = DATA.models[i];
+    const col = document.createElement("div");
+    col.className = "bar-col";
+
+    const val = document.createElement("span");
+    val.className = "val";
+    val.textContent = fmt(v);
+    val.style.color = i === 0 ? model.color : NON_HERO_LABEL;
+
+    const bar = document.createElement("div");
+    bar.className = "bar";
+    bar.style.height = Math.round((v / scale) * BAR_MAX) + "px";
+    bar.style.background = model.color;
+
+    col.append(val, bar);
+    bars.appendChild(col);
+  });
+
+  const gname = document.createElement("div");
+  gname.className = "gname";
+  multiline(gname, b.name);
+
+  group.append(bars, gname);
+
+  if (b.sub) {
+    const gsub = document.createElement("div");
+    gsub.className = "gsub";
+    gsub.textContent = b.sub;
+    group.appendChild(gsub);
+  }
+
+  chart.appendChild(group);
+});
+</script>
+
+</body>
+</html>
