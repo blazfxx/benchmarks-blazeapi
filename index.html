@@ -53,13 +53,15 @@
     position: absolute;
     /* wider than the card: the top edge recedes and narrows to an inset,
        while the bottom bleeds off the sides with no cream showing */
-    left: -8px;
-    right: -8px;
-    top: 408px;
-    height: 780px; /* extends past the card edge; bottom is cropped like the reference */
+    left: -14px;
+    right: -14px;
+    top: 316px;
+    height: 820px; /* extends past the card edge; bottom is cropped like the reference */
     background: #0a0a0c;
     border-radius: 28px;
-    transform: perspective(1400px) rotateX(6deg);
+    /* short focal length + steep angle = clear isosceles-trapezoid taper:
+       narrow top edge, full-bleed bottom */
+    transform: perspective(1000px) rotateX(12deg);
     transform-origin: 50% 100%;
     padding: 34px 0 0 56px;
     overflow: hidden; /* chart is wider than the card; crop to the tilted panel */
@@ -192,7 +194,7 @@ const DATA = {
 };
 /* ================================================================ */
 
-const BAR_MAX = 460;             // px height of a full-scale (100) bar
+const BAR_MAX = 520;             // px height of a full-scale (100) bar
 const LABEL_ROOM = 28;           // px above the bars reserved for value labels
 const NON_HERO_LABEL = "#e9e9e3"; // value-label color for non-hero models
 
