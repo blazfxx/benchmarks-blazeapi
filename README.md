@@ -8,6 +8,7 @@ screenshot at 1080×1080, post it.
 |---|---|---|
 | `index.html` | Benchmark card — grouped bar chart on a tilted dark panel | Model launch / benchmark results |
 | `pricing-card.html` | Plan card — model tiles, feature row, CTA pill | Pricing / plan announcements |
+| `quant-card.html` | Performance card — KPI stat tiles + a QUANT-vs-benchmark line chart, recolored to a dark/green scheme | Trading / performance announcements; also the worked example of a full recolor |
 | `icon.png` | Brand flame source image | Reference only — the cards embed a traced inline-SVG copy |
 
 ## Generate a card from your OWN data — step-by-step for agents
@@ -43,6 +44,13 @@ block changes.
    1080×1080 viewport, open the PNG, and read it. Check the "Verify before
    shipping" list. Iterate on `DATA` until it's right — never ship a card you
    haven't visually confirmed.
+
+   For a full recolor to a different product's identity — different accent,
+   different logo, dark-on-dark instead of cream-on-dark — see
+   `quant-card.html`. It keeps the structure (tilted panel, `DATA`-driven
+   render, flat fills, inline-SVG logo) but swaps the palette, the monospace
+   type, the candlestick mark, and the chart type. That's the pattern:
+   preserve structure and rules, change the scheme.
 
 7. **Swapping the brand icon** (only if it's a different brand): the icon is
    an inline `<svg>` path traced from a source image, NOT an `<img>`. To

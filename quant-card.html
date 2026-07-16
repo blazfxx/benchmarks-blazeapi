@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1080">
+<title>Quant — Performance Announcement Card</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { background: #2a2a28; }
+  body { display: grid; place-items: center; min-height: 100vh; }
+
+  /* ============ CARD (1080x1080 export frame) — Quant dark scheme ============ */
+  .card {
+    position: relative;
+    width: 1080px;
+    height: 1080px;
+    overflow: hidden;
+    background: #0a0b0d;               /* near-black, whole card is dark */
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #e9eaec;
+  }
+
+  /* ============ HEADER (top ~40%) ============ */
+  .header { padding-top: 52px; text-align: center; }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  .wordmark {
+    font-family: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 0.32em;
+    color: #f2f3f4;
+    padding-left: 0.32em; /* balance the tracking */
+  }
+
+  .headline-1 {
+    font-size: 78px;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+    color: #f2f3f4;
+  }
+  .headline-2 {
+    font-size: 50px;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    margin-top: 6px;
+    color: #c7c9cc;
+  }
+  .specline {
+    margin-top: 20px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: #7c8088;
+    text-transform: uppercase;
+  }
+  .specline .dot { margin: 0 12px; color: #4a4e55; }
+
+  /* ============ PANEL (bottom ~60%, tilted back) ============ */
+  .panel {
+    position: absolute;
+    left: -8px;
+    right: -8px;
+    top: 398px;
+    height: 800px;                    /* extends past the card edge; bottom is cropped */
+    background: #101318;
+    border: 1px solid #22262d;
+    border-radius: 28px;
+    transform: perspective(1400px) rotateX(6deg);
+    transform-origin: 50% 100%;
+    padding: 40px 52px 0;
+  }
+
+  /* stat tiles */
+  .tiles { display: flex; gap: 20px; }
+  .tile {
+    flex: 1 1 0;
+    background: #171a20;
+    border: 1px solid #262a31;
+    border-radius: 18px;
+    padding: 24px 24px 26px;
+  }
+  .tile-label {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    letter-spacing: 0.16em;
+    color: #7c8088;
+    text-transform: uppercase;
+  }
+  .tile-value {
+    margin-top: 14px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 42px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    color: #f2f3f4;
+  }
+  .tile-value.pos { color: #5fd08a; }  /* accent green, reserved for gains */
+  .tile-sub {
+    margin-top: 12px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 15px;
+    color: #7c8088;
+  }
+
+  /* performance chart */
+  .chart-head {
+    margin-top: 40px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .chart-title {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 15px;
+    letter-spacing: 0.16em;
+    color: #7c8088;
+    text-transform: uppercase;
+  }
+  .legend {
+    display: flex;
+    gap: 26px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 15px;
+    color: #c7c9cc;
+  }
+  .legend-item { display: flex; align-items: center; gap: 9px; }
+  .legend-line { width: 22px; height: 0; border-top: 2px solid #f2f3f4; }
+  .legend-line.dashed { border-top: 2px dashed #6f747c; }
+  .chart { margin-top: 18px; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <div class="brand">
+      <!-- Brand icon: Quant candlestick mark, flat fills, inline SVG. -->
+      <svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true">
+        <!-- down candle (red) -->
+        <rect x="6.6" y="3.5" width="1.6" height="17" rx="0.8" fill="#f0555b"/>
+        <rect x="4.9" y="7.5" width="5" height="8.5" rx="1.4" fill="#f0555b"/>
+        <!-- up candle (green) -->
+        <rect x="15.8" y="4.5" width="1.6" height="16" rx="0.8" fill="#5fd08a"/>
+        <rect x="14.1" y="8.5" width="5" height="8" rx="1.4" fill="#5fd08a"/>
+      </svg>
+      <span class="wordmark">QUANT</span>
+    </div>
+    <div class="headline-1" id="headline-1"></div>
+    <div class="headline-2" id="headline-2"></div>
+    <div class="specline" id="specline"></div>
+  </div>
+
+  <div class="panel">
+    <div class="tiles" id="tiles"></div>
+
+    <div class="chart-head">
+      <div class="chart-title" id="chart-title"></div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-line"></span><span id="leg-a"></span></div>
+        <div class="legend-item"><span class="legend-line dashed"></span><span id="leg-b"></span></div>
+      </div>
+    </div>
+    <div class="chart" id="chart"></div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   EDIT ONLY THIS BLOCK PER SNAPSHOT.
+   - headline.highlight: substring of line1 shown in the accent green.
+   - tiles: 4 KPI tiles; set pos:true to color the value green (a gain).
+   - series: two indexed lines (start = 100). seriesA is the solid hero
+     line, seriesB the dashed benchmark. Same length; even spacing.
+   ================================================================ */
+const DATA = {
+  accent: "#5fd08a",
+  headline: {
+    line1: "Quant is beating the market",
+    highlight: "beating the market",
+    line2: "an AI agent trading real prices",
+  },
+  specs: ["Paper", "$100K start", "since Jul 11"],
+  tiles: [
+    { label: "Total equity",   value: "$1,009.38",  sub: "1 position + cash" },
+    { label: "All-time return", value: "+0.94%", pos: true, sub: "since Jul 11" },
+    { label: "vs S&P 500",      value: "+1.11%", pos: true, sub: "benchmark -0.17%" },
+    { label: "Cash",            value: "$898.34",    sub: "89.0% of equity" },
+  ],
+  chartTitle: "Performance — Quant vs S&P 500",
+  seriesA: { name: "QUANT",   points: [100, 100.0, 99.95, 99.85, 99.75, 100.42, 100.36, 100.37, 101.0] },
+  seriesB: { name: "S&P 500", points: [100, 99.70, 99.35, 99.15, 99.40, 99.72, 99.62, 99.95, 99.80] },
+  xLabels: ["Jul 11", "Jul 15"],
+};
+/* ================================================================ */
+
+// header — highlight substring of line1 renders in the accent color
+const h1 = document.getElementById("headline-1");
+const hl = DATA.headline.highlight;
+const at = hl ? DATA.headline.line1.indexOf(hl) : -1;
+if (at === -1) {
+  h1.textContent = DATA.headline.line1;
+} else {
+  h1.appendChild(document.createTextNode(DATA.headline.line1.slice(0, at)));
+  const mark = document.createElement("span");
+  mark.textContent = hl;
+  mark.style.color = DATA.accent;
+  h1.appendChild(mark);
+  h1.appendChild(document.createTextNode(DATA.headline.line1.slice(at + hl.length)));
+}
+document.getElementById("headline-2").textContent = DATA.headline.line2;
+
+const spec = document.getElementById("specline");
+DATA.specs.forEach((s, i) => {
+  if (i > 0) {
+    const dot = document.createElement("span");
+    dot.className = "dot";
+    dot.textContent = "•";
+    spec.appendChild(dot);
+  }
+  spec.appendChild(document.createTextNode(s));
+});
+
+// tiles
+const tiles = document.getElementById("tiles");
+DATA.tiles.forEach((t) => {
+  const el = document.createElement("div");
+  el.className = "tile";
+  const lab = document.createElement("div");
+  lab.className = "tile-label";
+  lab.textContent = t.label;
+  const val = document.createElement("div");
+  val.className = "tile-value" + (t.pos ? " pos" : "");
+  val.textContent = t.value;
+  const sub = document.createElement("div");
+  sub.className = "tile-sub";
+  sub.textContent = t.sub;
+  el.append(lab, val, sub);
+  tiles.appendChild(el);
+});
+
+// chart head
+document.getElementById("chart-title").textContent = DATA.chartTitle;
+document.getElementById("leg-a").textContent = DATA.seriesA.name;
+document.getElementById("leg-b").textContent = DATA.seriesB.name;
+
+// line chart (flat inline SVG — no gradients, no fills)
+(function drawChart() {
+  const W = 924, H = 300, padL = 8, padR = 58, padT = 16, padB = 34;
+  const all = DATA.seriesA.points.concat(DATA.seriesB.points);
+  let lo = Math.min(...all), hi = Math.max(...all);
+  const pad = (hi - lo) * 0.18 || 1;
+  lo -= pad; hi += pad;
+  const n = DATA.seriesA.points.length;
+  const x = (i) => padL + (W - padL - padR) * (i / (n - 1));
+  const y = (v) => padT + (H - padT - padB) * (1 - (v - lo) / (hi - lo));
+
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("width", "924");
+  svg.setAttribute("height", "300");
+
+  // horizontal gridlines + y labels
+  const ticks = 4;
+  for (let t = 0; t <= ticks; t++) {
+    const v = lo + (hi - lo) * (t / ticks);
+    const yy = y(v);
+    const line = document.createElementNS(svgNS, "line");
+    line.setAttribute("x1", padL); line.setAttribute("x2", W - padR);
+    line.setAttribute("y1", yy); line.setAttribute("y2", yy);
+    line.setAttribute("stroke", "#22262d"); line.setAttribute("stroke-width", "1");
+    svg.appendChild(line);
+    const lab = document.createElementNS(svgNS, "text");
+    lab.setAttribute("x", W - padR + 10); lab.setAttribute("y", yy + 4);
+    lab.setAttribute("fill", "#5c6068");
+    lab.setAttribute("font-family", "ui-monospace, Menlo, monospace");
+    lab.setAttribute("font-size", "14");
+    lab.textContent = v.toFixed(1);
+    svg.appendChild(lab);
+  }
+
+  // x labels (first + last)
+  DATA.xLabels.forEach((t, i) => {
+    const lab = document.createElementNS(svgNS, "text");
+    lab.setAttribute("x", i === 0 ? padL : x(n - 1));
+    lab.setAttribute("y", H - 8);
+    lab.setAttribute("fill", "#5c6068");
+    lab.setAttribute("font-family", "ui-monospace, Menlo, monospace");
+    lab.setAttribute("font-size", "14");
+    if (i === DATA.xLabels.length - 1) lab.setAttribute("text-anchor", "end");
+    lab.textContent = t;
+    svg.appendChild(lab);
+  });
+
+  function polyline(points, color, dashed) {
+    const pts = points.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+    const pl = document.createElementNS(svgNS, "polyline");
+    pl.setAttribute("points", pts);
+    pl.setAttribute("fill", "none");
+    pl.setAttribute("stroke", color);
+    pl.setAttribute("stroke-width", "3");
+    pl.setAttribute("stroke-linejoin", "round");
+    pl.setAttribute("stroke-linecap", "round");
+    if (dashed) pl.setAttribute("stroke-dasharray", "3 7");
+    svg.appendChild(pl);
+    // end-value label
+    const last = points[points.length - 1];
+    const t = document.createElementNS(svgNS, "text");
+    t.setAttribute("x", x(n - 1) + 10);
+    t.setAttribute("y", y(last) + 4);
+    t.setAttribute("fill", color);
+    t.setAttribute("font-family", "ui-monospace, Menlo, monospace");
+    t.setAttribute("font-size", "15");
+    t.textContent = last.toFixed(1);
+    svg.appendChild(t);
+  }
+
+  polyline(DATA.seriesB.points, "#6f747c", true);   // benchmark, dashed gray
+  polyline(DATA.seriesA.points, "#f2f3f4", false);   // hero, solid white
+  document.getElementById("chart").appendChild(svg);
+})();
+</script>
+
+</body>
+</html>
