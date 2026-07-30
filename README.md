@@ -10,6 +10,7 @@ screenshot at 1080×1080, post it.
 | `pricing-card.html` | Plan card — model tiles, feature row, CTA pill | Pricing / plan announcements |
 | `quant-card.html` | Performance card — KPI stat tiles + a QUANT-vs-benchmark line chart, recolored to a dark/green scheme | Trading / performance announcements; also the worked example of a full recolor |
 | `usage-card.html` | Usage card — giant hero number in the headline + a 3-tile KPI row, in the base BlazeAPI cream/dark scheme | Lifetime/milestone stat announcements (e.g. total tokens processed) |
+| `payg-card.html` | PAYG card — copy of pricing-card.html recolored to cyan `#22d3ee`, feature-square/CTA now read `DATA.accent` dynamically instead of hardcoded orange | Pay-as-you-go / new pricing-tier announcements |
 | `icon.png` | Brand flame source image | Reference only — the cards embed a traced inline-SVG copy |
 
 ## Generate a card from your OWN data — step-by-step for agents

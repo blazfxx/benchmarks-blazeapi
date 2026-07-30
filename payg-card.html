@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1080">
+<title>BlazeAPI — PAYG Announcement Card</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { background: #2a2a28; }
+  body { display: grid; place-items: center; min-height: 100vh; }
+
+  /* ============ CARD (1080x1080 export frame) ============ */
+  .card {
+    position: relative;
+    width: 1080px;
+    height: 1080px;
+    overflow: hidden;
+    background: #f7f4ea;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
+  /* ============ HEADER (top ~40%) ============ */
+  .header {
+    padding-top: 46px;
+    text-align: center;
+    color: #141412;
+  }
+  .brand-icon { display: block; margin: 0 auto 20px; }
+  .headline-1 {
+    font-size: 80px;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+  }
+  .headline-2 {
+    font-size: 52px;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    margin-top: 4px;
+  }
+  .specline {
+    margin-top: 18px;
+    font-size: 30px;
+    font-weight: 400;
+    color: #8a8a86;
+  }
+  .specline .dot { margin: 0 14px; }
+
+  /* ============ PANEL (bottom ~60%, tilted back) ============ */
+  .panel {
+    position: absolute;
+    left: -8px;
+    right: -8px;
+    top: 408px;
+    height: 780px; /* extends past the card edge; bottom is cropped */
+    background: #0a0a0c;
+    border-radius: 28px;
+    transform: perspective(1400px) rotateX(6deg);
+    transform-origin: 50% 100%;
+    padding: 60px 64px 0;
+  }
+
+  .panel-label {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: #8a8a86;
+    text-transform: uppercase;
+  }
+
+  /* model tiles */
+  .tiles {
+    margin-top: 30px;
+    display: flex;
+    gap: 28px;
+  }
+  .tile {
+    flex: 1 1 0;
+    background: #15151a;   /* flat solid, one step above the panel */
+    border-radius: 20px;
+    padding: 40px 36px 36px;
+  }
+  .tile-swatch { width: 18px; height: 18px; border-radius: 5px; margin-bottom: 22px; }
+  .tile-name {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 34px;
+    font-weight: 700;
+    color: #f2f2ee;
+    line-height: 1.1;
+  }
+  .tile-sub {
+    margin-top: 12px;
+    font-size: 19px;
+    color: #8a8a86;
+    line-height: 1.35;
+  }
+
+  /* feature row */
+  .features {
+    margin-top: 66px;
+    display: flex;
+    justify-content: center;
+    gap: 52px;
+  }
+  .feature { display: flex; align-items: center; gap: 12px; }
+  .feature-square { width: 11px; height: 11px; border-radius: 3px; background: #ff8a2b; }
+  .feature-text { font-size: 23px; font-weight: 500; color: #d8d8d2; }
+
+  /* price pill */
+  .cta {
+    margin: 66px auto 0;
+    width: max-content;
+    background: #ff8a2b;   /* flat solid */
+    color: #0a0a0c;
+    border-radius: 999px;
+    padding: 24px 62px;
+    font-size: 29px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <!-- Brand icon: BlazeAPI flame traced from icon.png, single flat color, inline SVG. -->
+    <svg class="brand-icon" width="84" height="84" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M11.95 19.89L11.77 19.84L11.48 19.86L11.39 19.82L11.04 19.79L10.29 19.65L9.77 19.49L9.59 19.37L9.19 19.23L8.81 19.04L8.04 18.53L7.02 17.58L6.71 17.2L6.32 16.59L5.82 15.54L5.61 14.79L5.52 14.02L5.5 13.2L5.61 12.4L5.92 11.48L6.41 10.64L6.59 10.44L6.89 10.25L7.08 10.21L7.36 10.23L7.64 10.39L7.77 10.52L7.86 10.71L7.89 11.09L7.98 11.53L8.14 11.79L8.34 11.99L8.67 12.18L8.88 12.2L9.05 12.27L9.56 12.18L9.89 11.99L10.21 11.58L10.3 11.3L10.3 10.76L10.25 10.55L10.04 9.96L9.62 9.26L9.53 8.98L9.43 8.84L9.18 7.97L9.18 7.71L9.13 7.55L9.18 6.66L9.32 6.05L9.5 5.58L9.74 5.11L10.14 4.5L10.56 3.98L11.13 3.39L11.58 3.06L11.93 2.92L12.3 2.99L12.57 3.23L12.79 3.87L12.9 4.41L13.28 5.41L13.56 5.93L13.61 6.09L14.17 6.94L15.0 7.86L15.68 8.5L16.29 8.99L16.75 9.45L17.03 9.75L17.59 10.52L17.87 11.02L18.25 11.95L18.46 12.89L18.48 13.5L18.46 14.11L18.36 14.79L18.15 15.52L17.87 16.2L17.52 16.83L17.21 17.27L16.89 17.67L16.36 18.2L15.42 18.9L14.77 19.25L14.2 19.49L13.36 19.72L11.95 19.89Z M12.06 18.3L12.3 18.25L12.59 18.27L13.12 18.18L13.92 17.92L14.62 17.57L14.91 17.38L15.67 16.71L16.25 15.91L16.68 15.05L16.86 14.34L16.89 14.09L16.84 13.99L16.91 13.88L16.91 13.31L16.86 13.27L16.82 12.63L16.63 12.05L16.21 11.23L15.64 10.48L15.09 9.93L14.62 9.57L14.09 9.06L13.8 8.85L12.95 7.88L12.2 6.73L11.78 5.74L11.73 5.46L11.66 5.32L11.58 5.26L11.31 5.58L10.96 6.16L10.77 6.84L10.75 7.41L10.79 7.8L10.86 7.92L10.89 8.11L11.17 8.74L11.52 9.35L11.85 10.36L11.82 10.43L11.92 10.92L11.87 11.41L11.82 11.72L11.59 12.3L11.29 12.77L11.12 12.91L11.09 13.0L10.71 13.3L10.05 13.65L9.47 13.79L8.62 13.77L8.27 13.68L7.66 13.37L7.41 13.18L7.22 12.97L7.12 12.95L7.07 13.15L7.07 13.85L7.11 13.88L7.09 14.06L7.21 14.7L7.46 15.42L7.93 16.24L8.55 16.96L9.3 17.54L10.03 17.92L10.55 18.11L10.92 18.18L10.99 18.15L11.11 18.22L11.34 18.27L11.93 18.27L12.06 18.3Z" fill="#ff8a2b" fill-rule="evenodd"/>
+    </svg>
+    <div class="headline-1" id="headline-1"></div>
+    <div class="headline-2" id="headline-2"></div>
+    <div class="specline" id="specline"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label" id="panel-label"></div>
+    <div class="tiles" id="tiles"></div>
+    <div class="features" id="features"></div>
+    <div class="cta" id="cta"></div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   EDIT ONLY THIS BLOCK PER RELEASE.
+   - headline.highlight: the part of line1 rendered in the accent color.
+   - models: the plans' included models, one tile each.
+   ================================================================ */
+const DATA = {
+  accent: "#22d3ee",
+  headline: {
+    line1: "Pay only for what you use",
+    highlight: "what you use",
+    line2: "PAYG is live on BlazeAPI",
+  },
+  specs: ["48 models", "No plan required", "Cache discounts included"],
+  panelLabel: "A few of the models",
+  models: [
+    { name: "DeepSeek V4 Flash", sub: "$0.0006 per request",        swatch: "#22d3ee" },
+    { name: "Claude Sonnet 5",   sub: "$0.09 in · $0.105 out /1M",  swatch: "#f2f2ee" },
+    { name: "Claude Opus 5",     sub: "$0.165 in · $0.265 out /1M", swatch: "#8a8a86" },
+  ],
+  features: ["Real per-token pricing", "Top up anytime", "One balance, any model"],
+  cta: "Top up from $10 →",
+};
+/* ================================================================ */
+
+// header — highlight substring of line1 renders in the accent color
+const h1 = document.getElementById("headline-1");
+const hl = DATA.headline.highlight;
+const at = hl ? DATA.headline.line1.indexOf(hl) : -1;
+if (at === -1) {
+  h1.textContent = DATA.headline.line1;
+} else {
+  h1.appendChild(document.createTextNode(DATA.headline.line1.slice(0, at)));
+  const mark = document.createElement("span");
+  mark.textContent = hl;
+  mark.style.color = DATA.accent;
+  h1.appendChild(mark);
+  h1.appendChild(document.createTextNode(DATA.headline.line1.slice(at + hl.length)));
+}
+document.getElementById("headline-2").textContent = DATA.headline.line2;
+
+const spec = document.getElementById("specline");
+DATA.specs.forEach((s, i) => {
+  if (i > 0) {
+    const dot = document.createElement("span");
+    dot.className = "dot";
+    dot.textContent = "•";
+    spec.appendChild(dot);
+  }
+  spec.appendChild(document.createTextNode(s));
+});
+
+// panel
+document.getElementById("panel-label").textContent = DATA.panelLabel;
+
+const tiles = document.getElementById("tiles");
+DATA.models.forEach((m) => {
+  const tile = document.createElement("div");
+  tile.className = "tile";
+  const sw = document.createElement("div");
+  sw.className = "tile-swatch";
+  sw.style.background = m.swatch;
+  const name = document.createElement("div");
+  name.className = "tile-name";
+  name.textContent = m.name;
+  const sub = document.createElement("div");
+  sub.className = "tile-sub";
+  sub.textContent = m.sub;
+  tile.append(sw, name, sub);
+  tiles.appendChild(tile);
+});
+
+const features = document.getElementById("features");
+DATA.features.forEach((f) => {
+  const item = document.createElement("div");
+  item.className = "feature";
+  const sq = document.createElement("span");
+  sq.className = "feature-square";
+  sq.style.background = DATA.accent;
+  const tx = document.createElement("span");
+  tx.className = "feature-text";
+  tx.textContent = f;
+  item.append(sq, tx);
+  features.appendChild(item);
+});
+
+const ctaEl = document.getElementById("cta");
+ctaEl.textContent = DATA.cta;
+ctaEl.style.background = DATA.accent;
+</script>
+
+</body>
+</html>
